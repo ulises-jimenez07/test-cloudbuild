@@ -1,0 +1,32 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/gsd-ai-mx-ulises/app-repo/demo-flask-app:$COMMIT_SHA', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/gsd-ai-mx-ulises/app-repo/demo-flask-app:$COMMIT_SHA']
+
+- name: 'us-central1-docker.pkg.dev/gsd-ai-mx-ulises/app-repo/demo-flask-app:$COMMIT_SHA'
+  entrypoint: 'bash'
+  args:
+   - '-c'
+   - |
+      python -m pytest
+  
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+   - 'run'
+   - 'deploy'
+   - 'py-bq-load'
+   - '--image'
+   - 'us-central1-docker.pkg.dev/gsd-ai-mx-ulises/app-repo/demo-flask-app:$COMMIT_SHA'
+   - '--region'
+   - 'us-central1'
+   - '--allow-unauthenticated'
+   - '--port'
+   - '8000'
+images:
+- 'us-central1-docker.pkg.dev/gsd-ai-mx-ulises/app-repo/demo-flask-app:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
