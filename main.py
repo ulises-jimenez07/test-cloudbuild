@@ -6,7 +6,6 @@ import os
 app = FastAPI()
 big_query_client = bigquery.Client()
 
-
 @app.get("/")
 def insert_bigquery():
     table_id = "gsd-ai-mx-ulises.test_schema.us_states"
