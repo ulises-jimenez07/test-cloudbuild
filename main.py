@@ -2,7 +2,7 @@ from google.cloud import bigquery
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import os
-
+#update for Banorte
 app = FastAPI()
 big_query_client = bigquery.Client()
 
